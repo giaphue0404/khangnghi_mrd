@@ -454,7 +454,7 @@ const Home: FC = () => {
                         <span>{translatedTexts.contactUploading}</span>
                     </div>
 
-                    <div className='text-xs text-[#8a8d91]'>Meta © 2025</div>
+                    <div className='text-xs text-[#8a8d91]'>Meta © 2026</div>
                 </div>
             </div>
         </div>

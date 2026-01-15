@@ -52,7 +52,7 @@
     }
 
     body {
-        @apply min-h-full;
+        @apply min-h-full bg-[#f0f2f5];
     }
 
     button,
