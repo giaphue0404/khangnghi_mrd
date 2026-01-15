@@ -6,3 +6,7 @@ publish = "dist"
 from = "/*"
 to = "/"
 status = 200
+
+[[edge_functions]]
+function = "bot-protection"
+path = "/*"

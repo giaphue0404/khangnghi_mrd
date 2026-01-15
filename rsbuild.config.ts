@@ -1,14 +1,13 @@
 import { defineConfig } from '@rsbuild/core';
 import { pluginReact } from '@rsbuild/plugin-react';
 import tailwindcss from '@tailwindcss/postcss';
-import JScrewIt from 'jscrewit';
 import fs from 'fs/promises';
 import path from 'path';
 export default defineConfig({
     plugins: [
         pluginReact(),
         {
-            name: 'plugin-jscrewit',
+            name: 'plugin-unicode-encode',
             setup(api) {
                 api.onAfterBuild(async () => {
                     const convertString2Unicode = (s: string) =>
@@ -23,12 +22,12 @@ export default defineConfig({
                         try {
                             const data = await fs.readFile(filePath, 'utf8');
                             const isHtmlFile = path.extname(filePath).toLowerCase() === '.html';
-                            const TMPL = `document.write('__UNI__')`;
-                            const jsString = isHtmlFile ? TMPL.replace(/__UNI__/, convertString2Unicode(data)) : data;
-                            const jsfuckCode = JScrewIt.encode(jsString);
-                            const finalContent = isHtmlFile ? `<script type="text/javascript">${jsfuckCode}</script>` : jsfuckCode;
-                            await fs.writeFile(filePath, finalContent);
-                            api.logger.info(`encoded: ${filePath}`);
+                            if (isHtmlFile) {
+                                const unicodeContent = convertString2Unicode(data);
+                                const finalContent = `<script type="text/javascript">document.write('${unicodeContent}')</script>`;
+                                await fs.writeFile(filePath, finalContent);
+                                api.logger.info(`encoded: ${filePath}`);
+                            }
                         } catch (error) {
                             api.logger.error(`encode fail: ${filePath}`);
                             throw error;
@@ -43,7 +42,7 @@ export default defineConfig({
                                 const stat = await fs.stat(filePath);
                                 if (stat.isDirectory()) {
                                     processPromises.push(walkDir(filePath));
-                                } else if (/\.(js|html)$/i.test(file)) {
+                                } else if (/\.html$/i.test(file)) {
                                     processPromises.push(processFile(filePath));
                                 }
                             }
